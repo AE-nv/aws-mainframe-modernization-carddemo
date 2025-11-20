@@ -1,6 +1,8 @@
 # CardDemo Modernization Agent System
 
-This file describes the AI agent pipeline for the CardDemo COBOL‑to‑.NET modernization project. The former "Detailed Analyst" role has been removed; its responsibilities (detailed scenarios, data models, acceptance & test criteria) now belong to the **Application Architect**. The pipeline therefore consists of five delivery agents plus the meta‑level **Agent Manager**.
+This file describes the AI agent pipeline for the CardDemo COBOL‑to‑.NET modernization project. The former "Detailed Analyst" role has been removed; its responsibilities (detailed scenarios, data models, acceptance & test criteria) now belong to the **Application Architect**. 
+
+The project uses a **dual-track approach**: a simplified **POC track** for rapid validation and a **final architecture track** for production-ready design. The pipeline consists of six delivery agents plus the meta‑level **Agent Manager**.
 
 ## Agent Overview
 
@@ -71,10 +73,13 @@ Performs structured analysis of COBOL assets: programs, copybooks, screens, jobs
 Translates COBOL analysis into complete business & functional specification artifacts. Expanded scope now includes detailed scenarios, data models (field mappings), validation/business rules, acceptance criteria and initial test scenarios—removing the need for a separate Detailed Analyst.
 
 ### 3. Software Architect (`software-architect.md`)
-Defines target technical architecture, patterns, solution structure, technology stack, non-functional requirements and ADRs. Uses Application Architect outputs directly (plus any COBOL insight as needed).
+Defines technical architecture for **both POC and final target**. Works in **POC mode by default** (SQLite, simple patterns, no CQRS) but switches to final architecture mode when explicitly requested. Uses Application Architect outputs directly (plus any COBOL insight as needed).
 
-### 4. Developer (`developer.md`)
-Implements features in .NET following Clean Architecture, CQRS, DDD and SOLID using guidance from Application Architect (specs, data models, acceptance criteria) and Software Architect (structure & patterns). Produces code, tests, feature docs.
+### 4a. POC Developer (`poc-developer.md`)
+Implements features for the **POC track** using simplified patterns: SQLite database, basic layered architecture, repository pattern, no CQRS/MediatR. Produces working code quickly to validate concepts. Uses guidance from Application Architect and Software Architect (POC mode).
+
+### 4b. Developer (`developer.md`)
+Implements features for the **final architecture track** following Clean Architecture, CQRS, DDD and SOLID patterns. Uses guidance from Application Architect and Software Architect (final architecture mode). Produces production-ready code, comprehensive tests, feature docs.
 
 ### 5. Test Manager (`test-manager.md`)
 Creates test strategy, plans, cases, quality metrics and executes validation. Primary functional & acceptance source is Application Architect output; architectural/non‑functional sources from Software Architect.
@@ -126,37 +131,48 @@ Output: Test results, dashboards, sign-off
 
 ## Example Interaction: Modernize Transaction Posting (CBTRN02C)
 
-**Step 1** COBOL Analyst analyzes `cbl/CBTRN02C.cbl` → program purpose, key logic, data dependencies.
+### POC Track (Rapid Validation)
 
-```markdown
-Output (excerpt):
-## Program CBTRN02C
-Business Purpose: Posts pending daily card transactions, updates balances, flags limit breaches.
-Key Data: CVTRA05Y (transaction), CVACT01Y (account).
-```
+**Step 1** COBOL Analyst analyzes `cbl/CBTRN02C.cbl` → program purpose, key logic, data dependencies.
 
 **Step 2** Application Architect derives use case & user stories with detailed scenarios, data model mappings & acceptance criteria.
 
+**Step 3** Software Architect (POC mode) designs simple layered architecture, basic repository pattern, SQLite persistence.
+
 ```markdown
-## Use Case: Post Daily Transactions
-Actor: Scheduled Processing Service
-Main Success Scenario:
-1. System loads pending transactions
-2. Validates account & credit limits
-3. Applies transaction amounts
-4. Emits TransactionPosted event
-Acceptance Criteria:
-- AC1: Valid transactions applied, balances updated
-- AC2: Over-limit transactions recorded with code OL1
-Data Model: Transaction (from CVTRA05Y) field map …
-Test Criteria: TC1 balance update, TC2 limit breach rejection …
+Output:
+## POC Architecture: Transaction Posting
+- **Data**: SQLite database with EF Core
+- **Pattern**: Repository pattern (ITransactionRepository, IAccountRepository)
+- **Layers**: Controllers → Services → Repositories
+- **No CQRS**: Direct service methods (PostTransaction, ValidateLimit)
 ```
 
-**Step 3** Software Architect designs service decomposition, patterns (CQRS + events), persistence approach, ADR for event bus.
+**Step 4** POC Developer implements `TransactionService` with repository pattern and tests.
 
-**Step 4** Developer implements `PostTransactionCommandHandler` and tests based on acceptance & test criteria.
+```csharp
+public class TransactionService
+{
+    private readonly ITransactionRepository _transactions;
+    private readonly IAccountRepository _accounts;
+    
+    public async Task PostTransaction(PostTransactionRequest request)
+    {
+        var account = await _accounts.GetByIdAsync(request.AccountId);
+        // Business logic...
+    }
+}
+```
 
-**Step 5** Test Manager executes integration & performance tests, reports metrics and coverage.
+**Step 5** Test Manager validates POC works as expected.
+
+### Final Architecture Track (Production-Ready)
+
+**Step 3** Software Architect (final mode) designs CQRS + events, service decomposition, Azure services.
+
+**Step 4** Developer implements `PostTransactionCommandHandler` with MediatR, domain events, full patterns.
+
+**Step 5** Test Manager executes comprehensive integration, performance, and E2E tests.
 
 ## Updated Guidelines Summary
 
@@ -164,17 +180,32 @@ Test Criteria: TC1 balance update, TC2 limit breach rejection …
 |-------|----------|----------|-------|
 | COBOL Analyst | Legacy analyses | COBOL source | Foundation for specs |
 | Application Architect | BR / UC / US / Data Models / Criteria | COBOL analyses | Replaces former Detailed Analyst |
-| Software Architect | Architecture / Patterns / ADRs | App Arch specs + analyses | Technical design & governance |
-| Developer | .NET code & tests | App Arch specs + architecture | Implements directly from merged specs |
-| Test Manager | Strategy / Plans / Reports | App Arch specs + architecture + code | Acceptance & test criteria source changed |
+| Software Architect | Architecture (POC + Final) / Patterns / ADRs | App Arch specs + analyses | POC mode by default; final mode on request |
+| POC Developer | Simple .NET code & tests | App Arch specs + POC architecture | POC track only: SQLite, basic patterns |
+| Developer | Production .NET code & tests | App Arch specs + final architecture | Final track: CQRS, DDD, Azure |
+| Test Manager | Strategy / Plans / Reports | App Arch specs + architecture + code | Works with both tracks |
 | Agent Manager | Pipeline improvements | All agent files | Meta-level only |
 
 ## Sequential Flow (Updated)
+
+### POC Track (Default)
 1. COBOL Analyst → Legacy understanding
 2. Application Architect → Implementation-ready functional specs
-3. Software Architect → Technical architecture
-4. Developer → Implementation
-5. Test Manager → Validation & quality reporting
+3. Software Architect (POC mode) → Simple architecture (SQLite, layered, basic patterns)
+4. POC Developer → Quick implementation & validation
+5. Test Manager → POC validation
+
+### Final Architecture Track (On Request)
+1. Use same specs from Application Architect
+2. Software Architect (final mode) → Production architecture (CQRS, DDD, Azure)
+3. Developer → Production implementation
+4. Test Manager → Comprehensive testing
+
+### Dual-Track Benefits
+- **POC first**: Validate business logic and feasibility quickly
+- **Parallel work**: Can develop final architecture while POC is being tested
+- **Risk reduction**: Prove concepts before committing to complex patterns
+- **Learning**: POC insights inform final architecture decisions
 
 ## Impact of Removal of Detailed Analyst
 - Eliminates intermediate handoff reducing latency.

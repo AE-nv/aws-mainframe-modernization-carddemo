@@ -444,7 +444,6 @@ public class CreateAccountCommandValidator
 ```csharp
 // tests/CardDemo.Domain.Tests/Entities/AccountTests.cs
 using Xunit;
-using FluentAssertions;
 using CardDemo.Domain.Entities;
 using CardDemo.Domain.ValueObjects;
 using CardDemo.Domain.Exceptions;
@@ -468,10 +467,10 @@ public class AccountTests
         var account = new Account(accountId, creditLimit);
 
         // Assert
-        account.Id.Should().Be(accountId);
-        account.CreditLimit.Should().Be(creditLimit);
-        account.CurrentBalance.Should().Be(Money.Zero);
-        account.Status.Should().Be(AccountStatus.Active);
+        Assert.Equal(accountId, account.Id);
+        Assert.Equal(creditLimit, account.CreditLimit);
+        Assert.Equal(Money.Zero, account.CurrentBalance);
+        Assert.Equal(AccountStatus.Active, account.Status);
     }
 
     [Fact]
@@ -481,12 +480,10 @@ public class AccountTests
         var accountId = new AccountId("00000000001");
         var creditLimit = new Money(Account.MaxCreditLimit + 0.01m);
 
-        // Act
-        Action act = () => new Account(accountId, creditLimit);
-
-        // Assert
-        act.Should().Throw<DomainException>()
-            .WithMessage("*exceeds maximum allowed*");
+        // Act & Assert
+        var exception = Assert.Throws<DomainException>(
+            () => new Account(accountId, creditLimit));
+        Assert.Contains("exceeds maximum allowed", exception.Message);
     }
 
     [Theory]
@@ -503,7 +500,7 @@ public class AccountTests
         account.PostTransaction(transaction);
 
         // Assert
-        account.CurrentBalance.Amount.Should().Be(amount);
+        Assert.Equal(amount, account.CurrentBalance.Amount);
     }
 
     [Fact]
@@ -598,8 +595,7 @@ public class AccountTests
 
 // tests/CardDemo.Application.Tests/Commands/CreateAccountCommandHandlerTests.cs
 using Xunit;
-using Moq;
-using FluentAssertions;
+using NSubstitute;
 using Microsoft.Extensions.Logging;
 using CardDemo.Application.Commands;
 using CardDemo.Application.Exceptions;
@@ -610,24 +606,24 @@ namespace CardDemo.Application.Tests.Commands;
 
 public class CreateAccountCommandHandlerTests
 {
-    private readonly Mock<IAccountRepository> _accountRepositoryMock;
-    private readonly Mock<ICustomerRepository> _customerRepositoryMock;
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly Mock<ILogger<CreateAccountCommandHandler>> _loggerMock;
+    private readonly IAccountRepository _accountRepository;
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateAccountCommandHandler> _logger;
     private readonly CreateAccountCommandHandler _handler;
 
     public CreateAccountCommandHandlerTests()
     {
-        _accountRepositoryMock = new Mock<IAccountRepository>();
-        _customerRepositoryMock = new Mock<ICustomerRepository>();
-        _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _loggerMock = new Mock<ILogger<CreateAccountCommandHandler>>();
+        _accountRepository = Substitute.For<IAccountRepository>();
+        _customerRepository = Substitute.For<ICustomerRepository>();
+        _unitOfWork = Substitute.For<IUnitOfWork>();
+        _logger = Substitute.For<ILogger<CreateAccountCommandHandler>>();
 
         _handler = new CreateAccountCommandHandler(
-            _accountRepositoryMock.Object,
-            _customerRepositoryMock.Object,
-            _unitOfWorkMock.Object,
-            _loggerMock.Object);
+            _accountRepository,
+            _customerRepository,
+            _unitOfWork,
+            _logger);
     }
 
     [Fact]
@@ -641,28 +637,27 @@ public class CreateAccountCommandHandlerTests
             CustomerId = "000000001"
         };
 
-        _customerRepositoryMock
-            .Setup(x => x.ExistsAsync(It.IsAny<CustomerId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _customerRepository
+            .ExistsAsync(Arg.Any<CustomerId>(), Arg.Any<CancellationToken>())
+            .Returns(true);
 
-        _accountRepositoryMock
-            .Setup(x => x.ExistsAsync(It.IsAny<AccountId>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+        _accountRepository
+            .ExistsAsync(Arg.Any<AccountId>(), Arg.Any<CancellationToken>())
+            .Returns(false);
 
         // Act
         var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        response.AccountId.Should().Be(command.AccountId);
-        response.CreditLimit.Should().Be(command.CreditLimit);
-        response.Status.Should().Be("Active");
+        Assert.Equal(command.AccountId, response.AccountId);
+        Assert.Equal(command.CreditLimit, response.CreditLimit);
+        Assert.Equal("Active", response.Status);
 
-        _accountRepositoryMock.Verify(
-            x => x.AddAsync(It.IsAny<Account>(), It.IsAny<CancellationToken>()),
-            Times.Once);
+        await _accountRepository.Received(1)
+            .AddAsync(Arg.Any<Account>(), Arg.Any<CancellationToken>());
 
-        _unitOfWorkMock.Verify(
-            x => x.CommitAsync(It.IsAny<CancellationToken>()),
+        await _unitOfWork.Received(1)
+            .CommitAsync(Arg.Any<CancellationToken>());
             Times.Once);
     }
 
@@ -772,8 +767,7 @@ public class CreateAccountCommandHandlerTests
 
 3. **Test Frameworks**
    - xUnit (preferred) or NUnit
-   - FluentAssertions for readable assertions
-   - Moq for mocking dependencies
+   - NSubstitute for mocking dependencies
 
 4. **Test Independence**
    - Tests should not depend on each other
@@ -826,8 +820,7 @@ Before completing a feature, verify:
 
 <!-- Testing -->
 <PackageReference Include="xunit" Version="2.4.2" />
-<PackageReference Include="Moq" Version="4.18.4" />
-<PackageReference Include="FluentAssertions" Version="6.11.0" />
+<PackageReference Include="NSubstitute" Version="5.1.0" />
 <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
 
 <!-- Logging -->
