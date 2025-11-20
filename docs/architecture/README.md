@@ -8,9 +8,65 @@ This directory contains the complete architecture definition for the modernized 
 
 ## Overview
 
-The CardDemo modernization adopts a **Modular Monolith** architecture with Clean Architecture principles, Domain-Driven Design, and CQRS patterns. The application will be deployed on **Microsoft Azure** using **.NET 10**.
+The CardDemo modernization uses a **dual-track approach**:
 
-## Core Architecture Documents
+### POC Track (Rapid Validation)
+**Location**: `poc/` subfolder  
+**Purpose**: Quick proof-of-concept to validate business logic translation  
+**Technology**: SQLite, 3-layer architecture, no CQRS, local-only  
+**Timeline**: 1-2 weeks  
+**See**: [POC Architecture](poc/README.md)
+
+### Final Architecture Track (Production Target)
+**Location**: Main architecture documents  
+**Purpose**: Production-ready, cloud-native implementation  
+**Technology**: Azure SQL, Clean Architecture, CQRS, DDD, Azure services  
+**Timeline**: 2-3 months after POC validation  
+**Pattern**: Modular Monolith with Clean Architecture, DDD, and CQRS
+
+The CardDemo modernization's **final production architecture** adopts a **Modular Monolith** with Clean Architecture principles, Domain-Driven Design, and CQRS patterns. The application will be deployed on **Microsoft Azure** using **.NET 10**.
+
+## Dual-Track Approach
+
+### POC Architecture (Validation First) ✅ COMPLETE
+📁 **Location**: [poc/](poc/README.md)  
+📝 **Summary**: [POC Architecture Summary](poc/SUMMARY.md)
+
+Quick proof-of-concept with simplified architecture:
+- **[POC Overview](poc/overview.md)** - POC philosophy and approach (450+ lines)
+- **[POC Technology Stack](poc/technology-stack.md)** - SQLite, basic patterns (400+ lines)
+- **[POC Solution Structure](poc/solution-structure.md)** - Single-project structure (550+ lines)
+- **[POC Patterns](poc/patterns/)** - Repository and Service patterns (1,100+ lines)
+- **[POC README](poc/README.md)** - Quick start guide (300+ lines)
+
+**POC Characteristics**:
+- ⚡ **Fast**: 1-2 weeks to implement
+- 🏠 **Local**: No cloud dependencies (SQLite, runs locally)
+- 🎯 **Focused**: Validate business logic translation
+- ✅ **Simple**: 3-layer architecture, basic patterns
+
+**Use POC when**:
+- Need rapid validation (< 2 weeks)
+- Proving business logic correctness
+- Demonstrating to stakeholders
+- Learning and experimentation
+
+### Final Architecture (Production Target)
+📁 **Location**: Main architecture documents
+
+Production-ready architecture with full patterns:
+- Complete architecture documents (see below)
+- Cloud-native deployment
+- Enterprise patterns (CQRS, DDD, Event-Driven)
+
+**Use Final Architecture when**:
+- POC validation successful
+- Building for production
+- Need scale, resilience, observability
+
+---
+
+## Core Architecture Documents (Final/Production)
 
 ### 1. [Architecture Overview](overview.md)
 **Status**: ✅ Complete  

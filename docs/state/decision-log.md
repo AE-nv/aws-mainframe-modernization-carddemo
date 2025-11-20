@@ -88,6 +88,30 @@ Chosen option: "[option 1]", because [justification].
 
 ## Decision History
 
+### 2025-11-20: POC Architecture Defined
+
+**Summary**: POC architecture created for rapid validation approach  
+**Impact**: Enables quick proof-of-concept development before production implementation  
+**Documents**:
+- `architecture/poc/overview.md` - POC architecture overview and philosophy
+- `architecture/poc/technology-stack.md` - Simplified POC technology selections
+- `architecture/poc/solution-structure.md` - POC project organization
+- `architecture/poc/patterns/PATTERN-POC-001-repository-pattern.md` - Basic repository pattern for POC
+- `architecture/poc/patterns/PATTERN-POC-002-service-layer.md` - Service layer pattern for POC
+
+**Key POC Decisions**:
+- **SQLite Database**: File-based, zero-configuration database for local development
+- **3-Layer Architecture**: Simple Presentation → Business → Data layers
+- **No CQRS**: Direct service methods, no command/query separation
+- **No Cloud Services**: Runs entirely locally, no Azure dependencies
+- **Single Project**: All code in one project for simplicity
+- **Repository + Service Pattern**: Basic patterns for testability
+
+**POC vs Final Architecture**:
+- POC prioritizes speed, simplicity, and validation
+- Final architecture prioritizes production-readiness, scale, and cloud-native design
+- Core business logic remains the same between POC and final
+
 ### 2025-11-20: Architecture Definition Phase Complete
 
 **Summary**: Core architecture decisions made and documented  

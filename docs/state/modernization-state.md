@@ -125,6 +125,8 @@
 **Dependencies**: Initial Analysis (partial - sufficient for architecture definition)  
 **Status**: COMPLETE  
 **Completed Deliverables**:
+
+**Final Architecture (Production)**:
 - ✅ Architecture overview document (`architecture/overview.md`)
 - ✅ Technology stack specification (`architecture/technology-stack.md`)
 - ✅ Solution structure definition (`architecture/solution-structure.md`)
@@ -134,7 +136,15 @@
 - ✅ Design Patterns:
   - PATTERN-001: CQRS Implementation with MediatR
 
-**Key Architecture Decisions**:
+**POC Architecture (Rapid Validation)**:
+- ✅ POC architecture overview (`architecture/poc/overview.md`)
+- ✅ POC technology stack (`architecture/poc/technology-stack.md`)
+- ✅ POC solution structure (`architecture/poc/solution-structure.md`)
+- ✅ POC Design Patterns:
+  - PATTERN-POC-001: Repository Pattern
+  - PATTERN-POC-002: Service Layer Pattern
+
+**Key Architecture Decisions (Final)**:
 - **Architectural Style**: Modular Monolith (microservices-ready design)
 - **Platform**: .NET 10 (LTS), C# 14
 - **Hosting**: Azure Container Apps (serverless containers)
@@ -145,6 +155,16 @@
 - **Authentication**: ASP.NET Core Identity + JWT tokens
 - **UI**: Blazor Server (admin portal)
 - **CI/CD**: GitHub Actions
+
+**POC Architecture (Simplified)**:
+- **Architectural Style**: 3-Layer Architecture (Presentation → Business → Data)
+- **Platform**: .NET 10 (LTS), C# 14
+- **Hosting**: Local development (`dotnet run`)
+- **Database**: SQLite (file-based, zero configuration)
+- **Patterns**: Repository + Service Layer (no CQRS)
+- **No Cloud Services**: Runs entirely locally
+- **Single Project**: All code in `CardDemo.POC.Web`
+- **Purpose**: Rapid validation of business logic before production build
 
 ### ⏳ Detailed Specification (Not Started)
 **Dependencies**: Architecture Definition complete  
