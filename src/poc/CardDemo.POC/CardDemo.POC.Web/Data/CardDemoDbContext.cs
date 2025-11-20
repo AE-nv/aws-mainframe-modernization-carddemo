@@ -30,8 +30,20 @@ public class CardDemoDbContext : DbContext
             entity.Property(e => e.FirstName).HasMaxLength(25).IsRequired();
             entity.Property(e => e.MiddleName).HasMaxLength(25);
             entity.Property(e => e.LastName).HasMaxLength(25).IsRequired();
-            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+            entity.Property(e => e.AddressLine1).HasMaxLength(50);
+            entity.Property(e => e.AddressLine2).HasMaxLength(50);
+            entity.Property(e => e.AddressLine3).HasMaxLength(50);
+            entity.Property(e => e.StateCode).HasMaxLength(2);
+            entity.Property(e => e.CountryCode).HasMaxLength(3);
+            entity.Property(e => e.ZipCode).HasMaxLength(10);
+            entity.Property(e => e.PhoneNumber1).HasMaxLength(15);
+            entity.Property(e => e.PhoneNumber2).HasMaxLength(15);
+            entity.Property(e => e.SSN).HasMaxLength(9);
+            entity.Property(e => e.GovernmentIssuedId).HasMaxLength(20);
+            entity.Property(e => e.EftAccountId).HasMaxLength(10);
+            entity.Property(e => e.PrimaryCardholderIndicator).HasMaxLength(1);
             entity.Property(e => e.FicoCreditScore).IsRequired();
+            entity.Ignore(e => e.FullName); // Computed property
         });
 
         // Configure Account

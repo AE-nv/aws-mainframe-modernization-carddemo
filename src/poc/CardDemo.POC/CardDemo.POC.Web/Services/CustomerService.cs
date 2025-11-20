@@ -55,6 +55,9 @@ public class CustomerService
                 $"Customer {customer.CustomerId} already exists");
         }
 
+        // Basic business rule validations
+        ValidateCustomer(customer);
+
         _context.Customers.Add(customer);
         await _context.SaveChangesAsync();
 
@@ -64,11 +67,59 @@ public class CustomerService
     }
 
     /// <summary>
+    /// Validate customer business rules
+    /// </summary>
+    private void ValidateCustomer(Customer customer)
+    {
+        // Customer ID must be 9 digits
+        if (customer.CustomerId.Length != 9 || !customer.CustomerId.All(char.IsDigit))
+        {
+            throw new ArgumentException("Customer ID must be exactly 9 digits");
+        }
+
+        // FICO score must be between 300 and 850
+        if (customer.FicoCreditScore < 300 || customer.FicoCreditScore > 850)
+        {
+            throw new ArgumentException("FICO credit score must be between 300 and 850");
+        }
+
+        // Primary cardholder indicator must be Y or N
+        if (customer.PrimaryCardholderIndicator != "Y" && customer.PrimaryCardholderIndicator != "N")
+        {
+            throw new ArgumentException("Primary cardholder indicator must be 'Y' or 'N'");
+        }
+
+        // Date of birth validation - must be 18+ years old
+        if (customer.DateOfBirth.HasValue)
+        {
+            var age = DateTime.Now.Year - customer.DateOfBirth.Value.Year;
+            if (customer.DateOfBirth.Value > DateTime.Now.AddYears(-age)) age--;
+            
+            if (age < 18)
+            {
+                throw new ArgumentException("Customer must be at least 18 years old");
+            }
+        }
+    }
+
+    /// <summary>
     /// Update an existing customer
     /// </summary>
     public async Task UpdateCustomerAsync(Customer customer)
     {
         _logger.LogInformation("Updating customer {CustomerId}", customer.CustomerId);
+
+        // Detach any existing tracked entity with the same key
+        var trackedEntity = _context.ChangeTracker.Entries<Customer>()
+            .FirstOrDefault(e => e.Entity.CustomerId == customer.CustomerId);
+        
+        if (trackedEntity != null)
+        {
+            _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+        }
+
+        // Validate customer business rules
+        ValidateCustomer(customer);
 
         _context.Customers.Update(customer);
         await _context.SaveChangesAsync();

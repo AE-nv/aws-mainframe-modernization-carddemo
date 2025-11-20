@@ -26,11 +26,12 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Ensure database is created
+// Ensure database is created and seeded
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CardDemoDbContext>();
     db.Database.EnsureCreated();
+    await SeedData.InitializeAsync(db);
 }
 
 // Configure the HTTP request pipeline

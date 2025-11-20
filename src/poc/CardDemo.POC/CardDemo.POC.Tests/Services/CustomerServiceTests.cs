@@ -155,4 +155,214 @@ public class CustomerServiceTests
         // Assert
         Assert.Null(result);
     }
+
+    [Theory]
+    [InlineData("12345678")]  // Too short
+    [InlineData("12345678A")] // Contains letter
+    [InlineData("1234567890")] // Too long
+    public async Task CreateCustomerAsync_InvalidCustomerId_ThrowsException(string invalidId)
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = invalidId,
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = 750
+        };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.CreateCustomerAsync(customer));
+    }
+
+    [Theory]
+    [InlineData(299)]  // Too low
+    [InlineData(851)]  // Too high
+    public async Task CreateCustomerAsync_InvalidFicoScore_ThrowsException(int invalidScore)
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = "000000001",
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = invalidScore
+        };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.CreateCustomerAsync(customer));
+    }
+
+    [Theory]
+    [InlineData("X")]  // Invalid value
+    [InlineData("YES")] // Too long
+    public async Task CreateCustomerAsync_InvalidPrimaryCardholderIndicator_ThrowsException(string invalidIndicator)
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = "000000001",
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = 750,
+            PrimaryCardholderIndicator = invalidIndicator
+        };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.CreateCustomerAsync(customer));
+    }
+
+    [Fact]
+    public async Task CreateCustomerAsync_CustomerTooYoung_ThrowsException()
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = "000000001",
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = 750,
+            DateOfBirth = DateTime.Now.AddYears(-17) // 17 years old
+        };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.CreateCustomerAsync(customer));
+    }
+
+    [Fact]
+    public async Task CreateCustomerAsync_ValidAgeCustomer_CreatesCustomer()
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = "000000001",
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = 750,
+            DateOfBirth = DateTime.Now.AddYears(-25) // 25 years old
+        };
+
+        // Act
+        var result = await service.CreateCustomerAsync(customer);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(customer.CustomerId, result.CustomerId);
+    }
+
+    [Fact]
+    public async Task UpdateCustomerAsync_ValidCustomer_UpdatesCustomer()
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = "000000001",
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = 750,
+            PhoneNumber1 = "555-1234"
+        };
+        context.Customers.Add(customer);
+        await context.SaveChangesAsync();
+
+        // Act
+        customer.PhoneNumber1 = "555-5678";
+        customer.FicoCreditScore = 780;
+        await service.UpdateCustomerAsync(customer);
+
+        // Assert
+        var updated = await context.Customers.FindAsync("000000001");
+        Assert.NotNull(updated);
+        Assert.Equal("555-5678", updated.PhoneNumber1);
+        Assert.Equal(780, updated.FicoCreditScore);
+    }
+
+    [Fact]
+    public async Task DeleteCustomerAsync_ExistingCustomer_DeletesCustomer()
+    {
+        // Arrange
+        using var context = CreateInMemoryContext();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(context, logger);
+
+        var customer = new Customer
+        {
+            CustomerId = "000000001",
+            FirstName = "John",
+            LastName = "Doe",
+            FicoCreditScore = 750
+        };
+        context.Customers.Add(customer);
+        await context.SaveChangesAsync();
+
+        // Act
+        await service.DeleteCustomerAsync("000000001");
+
+        // Assert
+        var deleted = await context.Customers.FindAsync("000000001");
+        Assert.Null(deleted);
+    }
+
+    [Fact]
+    public void FullName_WithMiddleName_ReturnsFullName()
+    {
+        // Arrange
+        var customer = new Customer
+        {
+            FirstName = "John",
+            MiddleName = "Robert",
+            LastName = "Doe"
+        };
+
+        // Act
+        var fullName = customer.FullName;
+
+        // Assert
+        Assert.Equal("John Robert Doe", fullName);
+    }
+
+    [Fact]
+    public void FullName_WithoutMiddleName_ReturnsFullName()
+    {
+        // Arrange
+        var customer = new Customer
+        {
+            FirstName = "John",
+            LastName = "Doe"
+        };
+
+        // Act
+        var fullName = customer.FullName;
+
+        // Assert
+        Assert.Equal("John Doe", fullName);
+    }
 }
