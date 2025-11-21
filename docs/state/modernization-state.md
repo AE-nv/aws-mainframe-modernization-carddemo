@@ -2,7 +2,7 @@
 
 **Last Updated**: 2025-11-21  
 **Current Phase**: Initial Analysis - COBOL Analysis COMPLETE (except JCL)  
-**Overall Progress**: 67% COBOL Analysis + 43% Business Requirements + 100% Architecture Definition
+**Overall Progress**: 71% COBOL Analysis + 43% Business Requirements + 100% Architecture Definition
 
 ## Phase Status
 
@@ -16,7 +16,7 @@
   - [x] Phase 1.1f: Reporting & Admin (100% - 4 programs + 2 screens + 1 copybook)
   - [x] Phase 1.1g: Remaining Batch & Utilities (100% - 8 programs + 20 copybooks)
   - [x] Phase 1.1h: Summary Documentation (100% - Module Map + Data Dictionary)
-  - [~] Phase 1.1i: JCL Batch Jobs (0% - 38 files DEFERRED)
+  - [~] Phase 1.1i: JCL Batch Jobs (11% - 4 of 38 files analyzed, 34 deferred)
 - [~] Initial Analysis - Phase 1.2: Business Requirements (43% complete - 3 of 7 modules)
 - [x] Architecture Definition (COMPLETE - 2025-11-20)
 - [ ] Detailed Specification (Not Started)
@@ -36,7 +36,7 @@
 ### ✅ Initial Analysis - Phase 1.1: COBOL Analysis (COMPLETE - except JCL)
 **Started**: 2025-11-19  
 **Completed**: 2025-11-21  
-**Completion**: 67% (79 of 117 files analyzed, 38 JCL deferred)
+**Completion**: 71% (83 of 117 files analyzed, 34 JCL deferred)
 - Programs: 30 of 30 (100%) ✅ **COMPLETE**
 - Copybooks: 30 of 30 (100%) ✅ **COMPLETE**
 - Screens: 17 of 17 (100%) ✅ **COMPLETE**
@@ -108,7 +108,7 @@
   - data-dictionary.md (comprehensive data dictionary from all 30 copybooks)
 
 **Deferred**:
-- ⚠️ Batch job documentation (38 JCL files) - Deferred to prioritize higher-value program/copybook analysis
+- ⚠️ Batch job documentation (34 remaining JCL files) - Majority deferred; 4 critical jobs analyzed (POSTTRAN, INTCALC, CREASTMT, TRANCATG)
 
 #### Phase 1.2: Business Requirements Analysis (Application Architect)
 
@@ -254,8 +254,8 @@
 | COBOL Copybooks Analyzed | 30 ✅ | 30 | 100% |
 | COBOL Screens Analyzed | 17 ✅ | 17 | 100% |
 | Summary Documents Created | 2 ✅ | 2 | 100% |
-| Batch Jobs Analyzed | 0 ⚠️ | 38 | 0% (Deferred) |
-| **Total Files Analyzed** | **79** | **117** | **67%** |
+| Batch Jobs Analyzed | 4 | 38 | 11% (Partial) |
+| **Total Files Analyzed** | **83** | **117** | **71%** |
 | Business Requirements Documented | 3 ✅ | 7 | 43% |
 | Use Cases Documented | 11 ✅ | 30+ | ~37% |
 | User Stories Created | 12 | 70+ | ~17% |
@@ -403,4 +403,4 @@
 - ⚠️ **JCL Jobs Deferred**: 38 files deferred to prioritize higher-value analysis
 - ✅ Updated `cobol-analysis-tracker.md` to reflect completion
 - ✅ Updated `modernization-state.md` with final status
-- **67% overall file analysis complete** (79 of 117 files, with 38 JCL deferred)
+- **71% overall file analysis complete** (83 of 117 files, with 34 JCL deferred)

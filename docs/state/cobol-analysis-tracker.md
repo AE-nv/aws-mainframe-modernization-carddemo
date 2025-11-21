@@ -4,7 +4,7 @@ This file tracks the systematic analysis of all COBOL-related files in the CardD
 
 **Last Updated**: 2025-11-21  
 **Analysis Phase**: Phase 6 Complete / Summary Documents Complete  
-**Overall Progress**: 67% (Programs/Copybooks/Screens/Summaries COMPLETE, JCL Deferred)
+**Overall Progress**: 71% (Programs/Copybooks/Screens/Summaries COMPLETE, Partial JCL Analysis Started)
 
 ## Status Legend
 
@@ -21,9 +21,9 @@ This file tracks the systematic analysis of all COBOL-related files in the CardD
 | Programs (cbl/) | 30 | 30 | 0 | 0 | 0 | 100% |
 | Copybooks (cpy/) | 30 | 30 | 0 | 0 | 0 | 100% |
 | Screens (bms/) | 17 | 17 | 0 | 0 | 0 | 100% |
-| Jobs (jcl/) | 38 | 0 | 0 | 0 | 38 | 0% |
+| Jobs (jcl/) | 38 | 4 | 0 | 0 | 34 | 11% |
 | Summary Docs | 2 | 2 | 0 | 0 | 0 | 100% |
-| **TOTAL** | **117** | **79** | **0** | **0** | **38** | **67%** |
+| **TOTAL** | **117** | **83** | **0** | **0** | **34** | **71%** |
 
 ---
 
@@ -163,10 +163,10 @@ This file tracks the systematic analysis of all COBOL-related files in the CardD
 
 | Job | Programs | Purpose | Status | Document | Analyzed Date | Priority | Frequency |
 |-----|----------|---------|--------|----------|---------------|----------|-----------|
-| POSTTRAN.jcl | CBTRN02C | Transaction Posting | ⏳ Not Started | - | - | High | Daily |
-| INTCALC.jcl | CBACT04C | Interest Calculation | ⏳ Not Started | - | - | High | Monthly |
-| CREASTMT.JCL | CBSTM03A, CBSTM03B | Statement Generation | ⏳ Not Started | - | - | High | Monthly |
-| TRANCATG.jcl | CBTRN03C | Transaction Category Balance | ⏳ Not Started | - | - | Medium | Daily |
+| POSTTRAN.jcl | CBTRN02C | Transaction Posting | ✅ Complete | JOB-POSTTRAN.md | 2025-11-21 | High | Daily |
+| INTCALC.jcl | CBACT04C | Interest Calculation | ✅ Complete | JOB-INTCALC.md | 2025-11-21 | High | Monthly |
+| CREASTMT.JCL | CBSTM03A, CBSTM03B | Statement Generation | ✅ Complete | JOB-CREASTMT.md | 2025-11-21 | High | Monthly |
+| TRANCATG.jcl | CBTRN03C | Transaction Category Balance | ✅ Complete | JOB-TRANCATG.md | 2025-11-21 | Medium | Daily |
 
 ### File Management Jobs
 
@@ -320,7 +320,7 @@ Priority: **High** - Required deliverables
 **Copybooks**: 30 of 30 (100%)  
 **Screens**: 17 of 17 (100%)  
 **Summary Docs**: 2 of 2 (100%)  
-**JCL Jobs**: 0 of 38 (0% - deferred for later analysis phase)
+**JCL Jobs**: 4 of 38 (11% - remaining 34 deferred for later analysis phase)
 
 **Next Steps**: Ready for Application Architect to begin business requirements analysis
 
@@ -332,7 +332,7 @@ None.
 
 ## Deferred Items
 
-**JCL Batch Jobs (38 files)**: Deferred to prioritize higher-value program/copybook analysis and summary documents. JCL analysis can be completed in a later phase when needed for deployment planning and batch job migration.
+**JCL Batch Jobs (34 remaining of 38)**: Majority still deferred; initial critical jobs (POSTTRAN, INTCALC, CREASTMT, TRANCATG) analyzed to support downstream planning. Remaining jobs will be addressed later for deployment and scheduling migration.
 
 ---
 
@@ -433,6 +433,10 @@ None.
 | 2025-11-21 | Summary | Created comprehensive module-map.md document | COBOL Analyst |
 | 2025-11-21 | Summary | Created comprehensive data-dictionary.md document | COBOL Analyst |
 | 2025-11-21 | Phase 7 | Summary Documentation phase complete (2 documents) | COBOL Analyst |
-| 2025-11-21 | JCL | Deferred 38 JCL batch job analyses to later phase | COBOL Analyst |
-| 2025-11-21 | Analysis | COBOL ANALYSIS COMPLETE - 79 of 117 files (67%), 38 JCL deferred | COBOL Analyst |
+| 2025-11-21 | JCL | Deferred 34 remaining JCL batch job analyses to later phase | COBOL Analyst |
+| 2025-11-21 | POSTTRAN.jcl | Completed job analysis | COBOL Analyst |
+| 2025-11-21 | INTCALC.jcl | Completed job analysis | COBOL Analyst |
+| 2025-11-21 | CREASTMT.JCL | Completed job analysis | COBOL Analyst |
+| 2025-11-21 | TRANCATG.jcl | Completed job analysis | COBOL Analyst |
+| 2025-11-21 | Analysis | COBOL ANALYSIS PROGRESS - 83 of 117 files (71%), 34 JCL deferred | COBOL Analyst |
 
