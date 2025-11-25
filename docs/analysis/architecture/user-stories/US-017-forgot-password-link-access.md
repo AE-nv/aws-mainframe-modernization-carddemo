@@ -2,7 +2,7 @@
 
 ## User Story
 **As a** user who cannot remember my password  
-**I want to** easily access the password reset functionality from the login error screen  
+**I want to** easily access the password reset functionality from the login page  
 **So that** I can regain access to my account without contacting support
 
 ## Source
@@ -20,7 +20,7 @@
 **When** the error and warning are displayed  
 **Then** the "Forgot Password?" link is displayed more prominently (larger, highlighted)
 
-**Given** I am viewing the login error screen  
+**Given** I am viewing the login page with an error message  
 **When** I click the "Forgot Password?" link  
 **Then** I am navigated to the password reset workflow (UC-006)
 

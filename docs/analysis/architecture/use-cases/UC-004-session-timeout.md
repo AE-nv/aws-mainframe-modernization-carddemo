@@ -204,7 +204,7 @@ This use case addresses **authentication session timeout** (security boundary), 
 - [x] User redirected to login page on timeout
 - [x] Timeout events logged with details
 - [x] Multiple tabs handled correctly
-- [x] Unsaved changes preserved when feasible
+- [x] User work context automatically preserved in database (draft forms, filters, pagination)
 - [x] Warning and timeout messages are accessible
 - [x] Performance requirements met
 - [x] Compliance requirements satisfied
@@ -219,8 +219,8 @@ This use case addresses **authentication session timeout** (security boundary), 
 - **US-007**: Automatic Session Timeout (Main Success Scenario steps 10-15)
 - **US-024**: Session Extension via User Interaction (Alternative Flow 9b)
 - **US-025**: Multiple Tabs Timeout Handling (Exception Flow 6a)
-- **US-026**: Unsaved Changes Recovery After Timeout (Alternative Flow 11a)
-- **US-027**: Critical Operation Timeout Extension (Exception Flow 11b)
+- **US-026**: Unsaved Changes Recovery After Timeout (Application State Persistence - Default Behavior)
+- **US-027**: Critical Operation Timeout Extension (Exception Flow 12b)
 - **US-028**: Session Timeout with Network Disconnection (Exception Flow 11c)
 - **US-029**: Session Timeout During Active Operation (Alternative Flow 14a)
 

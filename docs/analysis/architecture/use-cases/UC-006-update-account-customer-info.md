@@ -34,9 +34,9 @@
    - FICO score range (300-850)
 8. System displays validation results
 9. If all validations pass:
-   - System reveals Save and Cancel options
-   - System displays "Press F5 to Save, F12 to Cancel"
-10. User presses F5 to confirm
+   - System enables Save and Cancel buttons
+   - Buttons become active/clickable
+10. User clicks Save button to confirm
 11. System performs concurrency check (detects if record changed by another user)
 12. System updates both account and customer records atomically
 13. System releases locks
@@ -52,13 +52,13 @@
 - System preserves user's other inputs
 - User corrects errors and resubmits
 
-### If user presses F12 to cancel
+### If user clicks Cancel button
 - System releases record locks
 - System discards all changes
 - System returns to previous page
 - User sees "Update cancelled" message
 
-### If user exits (F3) before saving
+### If user navigates away or closes form before saving
 - System releases record locks
 - System discards all changes
 - System returns to account list

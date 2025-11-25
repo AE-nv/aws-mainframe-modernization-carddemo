@@ -30,11 +30,11 @@
 8. System displays pagination controls if more results available
 9. User reviews results
 10. User can:
-    - Navigate to next/previous page
-    - Select a card for viewing (enter 'S' or click View)
-    - Select a card for updating (enter 'U' or click Edit)
+    - Navigate to next/previous page using pagination controls
+    - Click View button to select a card for viewing
+    - Click Edit button to select a card for updating
     - Modify filter criteria and search again
-    - Exit to main menu
+    - Navigate to main menu
 
 ## Alternative Flows
 
@@ -58,15 +58,17 @@
 - System may limit results to first 100 or 1000 cards for performance
 - System suggests adding filter criteria for better performance
 
-### If user navigates to next page (F8 or Next button)
+### If user navigates to next page
+- User clicks Next button or page number
 - System retrieves next set of results from current position
 - System displays subsequent cards
-- System disables/hides "Next" button if at last page
+- System disables/hides Next button if at last page
 
-### If user navigates to previous page (F7 or Previous button)
-- System repositions browse cursor backward
-- System displays previous set of cards
-- System disables/hides "Previous" button if at first page
+### If user navigates to previous page
+- User clicks Previous button or page number
+- System retrieves previous set of results
+- System displays previous cards
+- System disables/hides Previous button if at first page
 
 ## Exception Flows
 
@@ -103,7 +105,7 @@
 - Show card status visually (green for active, red for inactive)
 - Mask card numbers appropriately (show last 4 digits only if required)
 - Provide sort capabilities (click column header to sort)
-- Support keyboard shortcuts for power users (Enter to search, F7/F8 for pagination)
+- Support keyboard navigation (Enter to submit search, Tab for field navigation)
 - Auto-focus on account number field when page loads
 - Clear button to reset all filters quickly
 
@@ -115,9 +117,9 @@
 - [ ] System displays results within 2 seconds
 - [ ] Pagination controls work correctly (forward and backward)
 - [ ] Filter criteria preserved when navigating between pages
-- [ ] User can select one card for viewing with 'S' or View button
-- [ ] User can select one card for updating with 'U' or Edit button
-- [ ] System validates only one selection per page
+- [ ] User can select one card for viewing by clicking View button
+- [ ] User can select one card for updating by clicking Edit button
+- [ ] Each card row has clear action buttons for View and Edit
 - [ ] System displays appropriate message when no results found
 - [ ] System handles large result sets (10,000+ cards) efficiently
 - [ ] Expired cards are visually distinguished in results

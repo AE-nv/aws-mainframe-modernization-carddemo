@@ -81,7 +81,7 @@
 - [x] Operations on expired session are rejected
 - [x] Clear timeout message displayed immediately
 - [x] User redirected to login page
-- [x] Unsaved data recovery offered where feasible
+- [x] User data automatically preserved in database (via continuous auto-save)
 - [x] User returned to previous context after re-authentication
 - [x] Failed operations logged for audit
 - [x] No security bypass possible via timing

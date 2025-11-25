@@ -6,7 +6,7 @@
 **So that** no one else can access customer data using my credentials
 
 ## Source
-**COBOL Program**: COSGN00C (F3 key exit handling)  
+**COBOL Program**: COSGN00C (logout/exit handling)  
 **Business Requirement**: BR-001 (User Authentication - FR-001.5)  
 **Use Case**: UC-002 (User Logout)
 

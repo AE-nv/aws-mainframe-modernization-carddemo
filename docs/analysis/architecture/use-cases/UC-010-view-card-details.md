@@ -13,8 +13,8 @@
 
 ## Main Success Scenario
 1. User arrives at card detail view either by:
-   - Selecting 'S' (View) from card search results
-   - Entering card number and account ID directly
+   - Clicking View button from card search results
+   - Entering card number and account ID directly in search form
 2. System retrieves card record from card master file
 3. System retrieves associated account information
 4. System retrieves associated customer information via cross-reference
@@ -28,9 +28,9 @@
    - CVV code (if user has permission, otherwise masked)
 6. User reviews card information
 7. User can:
-   - Press F3 or Back button to return to card list
+   - Click Back button to return to card list
    - Enter different account/card number to view another card
-   - Navigate to Edit if user has update permissions
+   - Click Edit button if user has update permissions
 
 ## Alternative Flows
 

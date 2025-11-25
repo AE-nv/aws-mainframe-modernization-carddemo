@@ -14,7 +14,7 @@
 
 ## Main Success Scenario
 1. User arrives at card update page by:
-   - Selecting 'U' (Update) from card search results
+   - Clicking Edit button from card search results
    - Clicking Edit button from card detail view
 2. System retrieves and locks card record using READ UPDATE
 3. System retrieves associated account and customer information for context
@@ -34,9 +34,9 @@
    - Expiration year: numeric, 1950-2099, not expired
 8. If all validations pass:
    - System displays validation success message
-   - System reveals Save (F5) and Cancel (F12) buttons
-   - System shows "Press F5 to Save or F12 to Cancel"
-9. User presses F5 to confirm save
+   - System enables Save and Cancel buttons
+   - Buttons become active and clickable
+9. User clicks Save button to confirm changes
 10. System performs concurrency check (verifies record not changed by another user)
 11. System updates card record (REWRITE)
 12. System releases lock
@@ -45,13 +45,13 @@
 
 ## Alternative Flows
 
-### If user presses F12 to cancel before saving
+### If user clicks Cancel button before saving
 - System releases record lock
 - System discards all changes
 - System displays "Update cancelled"
 - System returns to previous page (list or detail)
 
-### If user presses F3 to exit before confirming
+### If user navigates away or closes form before confirming
 - System releases record lock
 - System discards all changes
 - System returns to card list
@@ -156,8 +156,8 @@
 - [ ] User can update expiration month (1-12) and year (1950-2099)
 - [ ] System validates card name accepts only letters and spaces
 - [ ] System validates expiration date is not in the past
-- [ ] System requires explicit confirmation (F5) before committing changes
-- [ ] System allows cancellation (F12) before commit
+- [ ] System requires explicit confirmation via Save button before committing changes
+- [ ] System allows cancellation via Cancel button before commit
 - [ ] System detects concurrent modifications and prevents lost updates
 - [ ] System completes update within 2 seconds
 - [ ] System displays clear error messages for validation failures
