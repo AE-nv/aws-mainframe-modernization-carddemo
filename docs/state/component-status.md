@@ -45,13 +45,6 @@ This file tracks the modernization status of each component/module in the CardDe
 | Implementation | ⏳ Not Started | - | Developer | - |
 | Testing | ⏳ Not Started | - | Test Manager | - |
 
-**Use Cases** (4 total):
-- ✅ US-019: Network or System Error Recovery
-**Use Cases** (5 total):
-### Dependencies
-**User Stories** (30 total):
-| Testing | ⏳ Not Started | - | Test Manager | - |
-
 ### Deliverables Completed
 
 **Business Requirements**:
@@ -62,6 +55,18 @@ This file tracks the modernization status of each component/module in the CardDe
 - ✅ UC-006: Update Account and Customer Information (complex 40+ field update with transactional integrity)
 - ✅ UC-007: Calculate Monthly Interest (automated batch processing with control break logic)
 - ✅ UC-008: Export Account Data (multi-format export utility for reporting and integration)
+
+**User Stories** (10 total - UC-006):
+- ✅ US-037: View Account Information for Update
+- ✅ US-038: Modify Account and Customer Fields
+- ✅ US-039: Submit Changes for Validation
+- ✅ US-040: Save Validated Changes
+- ✅ US-041: Cancel Update Operation
+- ✅ US-042: Handle Validation Failures
+- ✅ US-043: Detect Concurrent Modification Conflicts
+- ✅ US-044: Handle Record Lock Failures
+- ✅ US-045: Handle Partial Update Failures with Rollback
+- ✅ US-046: Handle Connection Loss During Update
 
 ### Dependencies
 - MOD-001 (Authentication) must be complete
@@ -313,6 +318,7 @@ This file tracks the modernization status of each component/module in the CardDe
 | 2025-11-20 | MOD-001 | Business Requirements Complete (BR-001, 4 use cases, 12 user stories) | Application Architect |
 | 2025-11-25 | MOD-001 | Added 11 user stories for UC-003 (Authentication Failure Recovery) - now 23 total user stories | Application Architect |
 | 2025-11-20 | MOD-002 | Business Requirements Complete (BR-002, 4 use cases) | Application Architect |
+| 2025-11-25 | MOD-002 | User Stories for UC-006 Complete (10 stories: US-037 to US-046) | Application Architect |
 | 2025-11-20 | MOD-003 | Business Requirements Complete (BR-003, 3 use cases) | Application Architect |
 | 2025-11-20 | Cross-Cutting | POC Development Environment Complete - Blazor .NET 10 app with API and SQLite | POC Developer |
 
