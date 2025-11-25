@@ -2,8 +2,8 @@
 
 ## User Story
 **As a** security administrator  
-**I want** inactive user sessions to automatically timeout  
-**So that** unattended workstations cannot be exploited for unauthorized access
+**I want** inactive user authentication sessions to automatically timeout  
+**So that** unattended workstations cannot be exploited for unauthorized access while preserving user work context
 
 ## Source
 **Business Requirement**: BR-001 (Non-Functional Requirements - Security)  
@@ -35,21 +35,29 @@
 **When** my session times out  
 **Then** all tabs redirect to the login page simultaneously
 
-**Given** my session times out while I have unsaved changes  
+**Given** my session times out while I am working on a form or viewing data  
 **When** I log back in  
-**Then** the system offers to restore my unsaved work if recovery is available
+**Then** the system automatically restores me to my previous page with all application state intact (draft forms, search filters, etc.)
+
+**Given** my session times out  
+**When** I re-authenticate  
+**Then** I experience seamless continuation without manual recovery steps or data re-entry
 
 ## Business Rules
-- Timeout threshold is 30 minutes of inactivity (configurable)
+- Authentication timeout threshold is 30 minutes of inactivity (configurable)
 - Timeout applies to all users regardless of role
-- Session fully invalidated (same as manual logout)
+- Authentication session fully invalidated (same as manual logout)
 - All timeout events must be logged for audit
 - Timeout cannot be disabled or bypassed
+- Application state (forms, searches, filters) persists in database independent of authentication session
+- User work context automatically restored upon re-authentication
 
 ## UI/UX Considerations
 - Timeout message clearly explains what happened
 - Message includes "Log in again" button for convenience
-- If unsaved changes detected, recovery option offered
+- Message emphasizes "log in to continue" not "your work is lost"
+- After re-authentication, user automatically returns to previous context
+- Seamless restoration is transparent (user may not even notice except for login step)
 - Message is non-alarming (expected behavior)
 - Accessible timeout message
 - Mobile-friendly display
@@ -63,11 +71,15 @@
 - All timeout events audited
 
 ## Technical Notes
-- Server tracks last activity timestamp per session
-- Background process or scheduler checks for expired sessions
+- Server tracks last activity timestamp per authentication session
+- Background process or scheduler checks for expired authentication sessions
 - Session invalidation propagates across all application servers
 - Client detects invalidation on next server interaction
-- Optional: auto-save mechanism to preserve unsaved work
+- Application state continuously persisted to database (not optional)
+- User state includes: current page/route, draft form data, search filters, sort preferences, pagination
+- On re-authentication, server returns user context object
+- Client restores UI from database + localStorage
+- Return URL stored so user lands on exact previous page
 
 ## Compliance
 - Meets PCI-DSS requirement 8.1.8 (session timeout)
@@ -76,13 +88,15 @@
 - Timeout duration configurable to meet policy requirements
 
 ## Definition of Done
-- [x] Sessions timeout after 30 minutes of inactivity
+- [x] Authentication sessions timeout after 30 minutes of inactivity
 - [x] Timeout message displayed to user
 - [x] User redirected to login page
-- [x] Session fully invalidated server-side
+- [x] Authentication session fully invalidated server-side
 - [x] Timeout event logged with details
 - [x] Multiple tabs handle timeout correctly
 - [x] Back button prevented from accessing secured pages
-- [x] Unsaved work recovery offered when feasible
+- [x] Application state (forms, searches, filters) persists in database throughout timeout
+- [x] After re-authentication, user automatically returns to previous context
+- [x] Work context restoration is seamless and transparent
 - [x] Timeout meets compliance requirements
 - [x] Timeout cannot be bypassed

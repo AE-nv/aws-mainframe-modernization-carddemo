@@ -2,8 +2,8 @@
 
 ## User Story
 **As a** customer service representative  
-**I want to** receive a warning before my session times out  
-**So that** I can save my work and avoid losing progress
+**I want to** receive a warning before my authentication session times out  
+**So that** I can extend my session without interruption to my work
 
 ## Source
 **Business Requirement**: BR-001 (Non-Functional Requirements - Security - Session timeout)  
@@ -13,7 +13,7 @@
 
 **Given** I am logged in and have been inactive for 25 minutes  
 **When** the warning threshold is reached  
-**Then** I see a warning notification stating "Your session will expire in 5 minutes due to inactivity"
+**Then** I see a warning notification stating "Your session will expire in 5 minutes due to inactivity. Click 'Stay Logged In' to continue."
 
 **Given** I receive a session timeout warning  
 **When** the warning is displayed  
@@ -36,18 +36,20 @@
 **Then** the warning is displayed in all tabs simultaneously
 
 ## Business Rules
-- Warning appears 5 minutes before timeout (at 25 minutes of inactivity)
-- Any user activity resets the timeout timer
+- Warning appears 5 minutes before authentication session timeout (at 25 minutes of inactivity)
+- Any user activity resets the authentication timeout timer
 - Warning is non-blocking (doesn't prevent continued work)
 - Same timeout rules apply to all users (admin and regular)
+- Application state persists in database regardless of warning (no data loss)
 
 ## UI/UX Considerations
 - Warning displayed as modal or toast notification
-- Warning is attention-getting but not alarming
+- Warning is informative, not alarming (no "you'll lose your work" messaging)
 - Countdown timer clearly visible
 - "Stay Logged In" button prominently displayed
 - Option to dismiss warning (implies intent to continue working)
 - Warning doesn't block application usage
+- Message emphasizes "you'll need to log in again" not "your work will be lost"
 - Accessible notification (screen reader announcement)
 - Mobile-friendly warning display
 
@@ -59,12 +61,13 @@
 - Warning time not manipulable by client
 
 ## Technical Notes
-- Client-side JavaScript tracks user activity
-- Server-side tracks last activity timestamp
+- Client-side JavaScript tracks user activity for authentication session
+- Server-side tracks last activity timestamp in authentication session
 - "Stay Logged In" triggers heartbeat to server
 - Server resets activity timestamp on heartbeat
 - WebSocket or polling for real-time warning
 - Countdown timer runs client-side
+- Application state (forms, filters) continuously persisted to database independent of warning
 
 ## Definition of Done
 - [x] Warning displays 5 minutes before timeout

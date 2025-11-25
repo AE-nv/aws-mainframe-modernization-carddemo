@@ -2,9 +2,15 @@
 
 ## Overview
 **Actor**: System (automatic), with impact on Customer Service Representatives and Administrative Staff  
-**Goal**: Automatically terminate inactive user sessions for security  
+**Goal**: Automatically terminate inactive authentication sessions for security while preserving user work context  
 **Frequency**: Continuous - monitors all active sessions  
 **Priority**: High - Critical security control to prevent unauthorized access
+
+## Important Distinction
+This use case addresses **authentication session timeout** (security boundary), not application state management:
+- **Authentication Session**: Proves user identity; must expire after inactivity for security compliance
+- **Application State**: User's work context (draft forms, search results, pagination); persists in database independent of authentication session
+- **User Experience**: Session timeout requires re-authentication but does NOT cause data loss
 
 ## Preconditions
 - User has authenticated and has active session
@@ -13,20 +19,21 @@
 
 ## Main Success Scenario
 1. User authenticates and begins working in application
-2. System tracks time of last user interaction
-3. User stops interacting with application (leaves desk, attends meeting, etc.)
-4. System continues monitoring session activity
-5. Inactivity period reaches warning threshold (e.g., 25 minutes)
-6. System displays timeout warning notification to user
-7. System shows countdown timer (e.g., "Session will expire in 5 minutes")
-8. System provides "Stay Logged In" button
-9. No response received from user (user still away)
-10. Inactivity period reaches timeout threshold (e.g., 30 minutes)
-11. System automatically invalidates session
-12. System displays timeout message: "Your session has expired due to inactivity"
-13. System logs timeout event (user, timestamp, last activity)
-14. System redirects user to login page
-15. When user returns, they see login page and must re-authenticate
+2. System tracks time of last user interaction for authentication session
+3. System continuously persists user work context (draft data, filters, etc.) to database
+4. User stops interacting with application (leaves desk, attends meeting, etc.)
+5. System continues monitoring authentication session activity
+6. Inactivity period reaches warning threshold (e.g., 25 minutes)
+7. System displays timeout warning notification to user
+8. System shows countdown timer (e.g., "Your session will expire in 5 minutes")
+9. System provides "Stay Logged In" button
+10. No response received from user (user still away)
+11. Inactivity period reaches timeout threshold (e.g., 30 minutes)
+12. System automatically invalidates authentication session
+13. System displays timeout message: "Your session has expired due to inactivity. Please log in to continue."
+14. System logs timeout event (user, timestamp, last activity)
+15. System redirects user to login page
+16. When user returns and re-authenticates, system restores their work context (same page, preserved data, etc.)
 
 ## Alternative Flows
 
@@ -45,15 +52,7 @@
 - User continues working normally
 - Return to step 2 (monitoring continues)
 
-### 11a: User Has Unsaved Changes
-**If** user has unsaved data when timeout occurs
-- System attempts to auto-save if possible (application-dependent)
-- System stores recovery data in temporary storage if feasible
-- System includes recovery option on login page
-- After re-authentication, system offers to restore unsaved work
-- User decides whether to restore or discard
-
-### 14a: User Attempts to Use Application After Timeout
+### 12a: User Attempts to Use Application After Timeout
 **If** user tries to perform action after timeout but before notification seen
 - System detects invalid session on action attempt
 - System displays timeout message immediately
@@ -70,20 +69,21 @@
 - Timeout affects all tabs together
 - After timeout, all tabs redirect to login page
 
-### 11b: Critical Operation in Progress
+### 12b: Critical Operation in Progress
 **If** timeout would occur during critical operation (e.g., transaction submission)
-- System extends timeout temporarily until operation completes
+- System extends authentication session temporarily until operation completes
 - System displays notification that extension is active
 - After operation completes, normal timeout rules resume
-- Prevents data corruption or incomplete transactions
+- Prevents authentication interruption during data commit operations
 
-### 11c: Network Disconnection
+### 12c: Network Disconnection
 **If** client loses network connection during active session
-- Client-side timer continues even without server connectivity
-- When connection restored, client checks session validity with server
-- If timeout occurred server-side, session is invalid
-- User sees timeout message upon reconnection
-- User must re-authenticate
+- Client-side authentication timer continues even without server connectivity
+- Application state persists in browser storage during disconnection
+- When connection restored, client checks authentication session validity with server
+- If timeout occurred server-side, authentication session is invalid
+- User sees timeout message upon reconnection and must re-authenticate
+- After re-authentication, application state is restored from database and browser storage
 
 ### 14b: Multiple Concurrent Sessions
 **If** user has sessions from multiple devices/locations
@@ -93,26 +93,34 @@
 - Timed-out session requires individual re-authentication
 
 ## Business Rules Applied
-- **Inactivity Threshold**: Sessions timeout after 30 minutes of inactivity (configurable)
+- **Inactivity Threshold**: Authentication sessions timeout after 30 minutes of inactivity (configurable)
 - **Warning Lead Time**: Warning displays 5 minutes before timeout (configurable)
-- **Activity Detection**: Any user interaction resets inactivity timer
+- **Activity Detection**: Any user interaction resets authentication inactivity timer
 - **Audit Requirement**: All session timeouts logged for compliance
 - **No Exception for Roles**: Timeout applies to all users equally (admin and regular)
-- **Secure Cleanup**: Session data fully cleared on timeout, same as manual logout
+- **Secure Cleanup**: Authentication session fully cleared on timeout, same as manual logout
+- **Application State Persistence**: User work context (forms, searches, filters) persists in database independent of authentication session
+- **Seamless Recovery**: After re-authentication, user returns to exact previous context without data loss
 
 ## Data Captured/Changed
 **Read**:
-- Session metadata (creation time, last activity time, user identifier)
+- Authentication session metadata (creation time, last activity time, user identifier)
 - Session timeout configuration
+- User application state (from database)
 
 **Written**:
 - Last activity timestamp (updated on each user interaction)
 - Timeout audit log (user, timeout timestamp, last activity timestamp, session duration)
+- User application state (continuously persisted to database: draft forms, search filters, page context)
 
 **Deleted**:
-- Session token (invalidated)
-- Session context (cleared)
-- Client-side session data (cleared)
+- Authentication session token (invalidated)
+- Authentication session context (cleared)
+- Client-side authentication data (cleared)
+
+**Preserved**:
+- User application state in database (draft data, filters, preferences)
+- Browser local storage for non-sensitive UI state
 
 ## Acceptance Criteria
 
@@ -148,9 +156,9 @@
 **When** timeout occurs  
 **Then** all tabs are invalidated and redirect to login page
 
-**Given** user has unsaved changes  
-**When** timeout occurs  
-**Then** system attempts to preserve data for recovery after re-authentication
+**Given** user has work in progress (draft forms, search results, etc.)  
+**When** timeout occurs and user re-authenticates  
+**Then** user returns to exact previous context with all application state restored
 
 ## UI/UX Considerations
 - **Clear Warning**: Timeout warning clearly visible and attention-getting
@@ -158,8 +166,10 @@
 - **Easy Extension**: "Stay Logged In" button prominent and easy to click
 - **Dismiss Option**: User can dismiss warning if they'll complete work soon
 - **Non-Blocking**: Warning doesn't prevent user from continuing work
-- **Timeout Message**: Clear explanation of what happened and what to do next
-- **Recovery Offer**: If unsaved changes detected, offer recovery option after re-login
+- **Timeout Message**: Clear explanation emphasizing "log in to continue" not "your work is lost"
+- **Seamless Recovery**: After re-authentication, user automatically returns to previous page/state
+- **No Data Loss**: User reassured that their work is preserved
+- **Transparency**: User unaware of state persistence (just works)
 - **Accessibility**: Warning announced to screen readers
 - **Mobile Friendly**: Warning displays appropriately on mobile devices
 
@@ -204,6 +214,16 @@
 - **UC-002**: User Logout (voluntary session termination - similar outcome)
 - **UC-005**: Session Management (overall session lifecycle)
 
+## Related User Stories
+- **US-006**: Session Timeout Warning (Main Success Scenario steps 5-9)
+- **US-007**: Automatic Session Timeout (Main Success Scenario steps 10-15)
+- **US-024**: Session Extension via User Interaction (Alternative Flow 9b)
+- **US-025**: Multiple Tabs Timeout Handling (Exception Flow 6a)
+- **US-026**: Unsaved Changes Recovery After Timeout (Alternative Flow 11a)
+- **US-027**: Critical Operation Timeout Extension (Exception Flow 11b)
+- **US-028**: Session Timeout with Network Disconnection (Exception Flow 11c)
+- **US-029**: Session Timeout During Active Operation (Alternative Flow 14a)
+
 ## Source References
 - **Business Requirement**: BR-001 (User Authentication - security requirements)
 - **Security Standard**: PCI-DSS requirement for session timeout
@@ -212,16 +232,25 @@
 ## Implementation Notes
 
 **Modern Web Implementation**:
-- Client-side JavaScript tracks user activity (mouse, keyboard, touch)
-- Periodic heartbeat to server validates session still active
-- Server-side absolute timeout enforcement (cannot be bypassed)
-- WebSocket or polling for real-time timeout warning
-- Local storage can cache unsaved changes for recovery
-- Service Worker can handle timeout detection even when tab not active
+- **Authentication Session**: JWT token or server-side session for identity
+  - Client-side JavaScript tracks user activity (mouse, keyboard, touch)
+  - Periodic heartbeat to server validates session still active
+  - Server-side absolute timeout enforcement (cannot be bypassed)
+  - WebSocket or polling for real-time timeout warning
+  - Service Worker can handle timeout detection even when tab not active
+
+- **Application State Persistence**: Database-backed user context
+  - Draft form data auto-saved to database on change (debounced)
+  - Search filters, pagination, sort preferences stored per user
+  - Browser localStorage for non-sensitive UI preferences
+  - On re-authentication, server returns last known user context
+  - Client restores UI state from database + localStorage
+  - Seamless continuation without user awareness
 
 **Configuration Parameters** (example values):
-- Inactivity timeout: 30 minutes
+- Authentication inactivity timeout: 30 minutes
 - Warning threshold: 25 minutes (5 min before timeout)
 - Warning countdown: 5 minutes
 - Heartbeat interval: 5 minutes
 - Grace period for critical operations: +5 minutes
+- Auto-save debounce: 2 seconds after user stops typing
