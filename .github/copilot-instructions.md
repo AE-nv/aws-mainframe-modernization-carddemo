@@ -59,6 +59,8 @@ Every agent must update state files when completing work:
 - `docs/state/component-status.md` - Component progress tracking
 - `docs/state/modernization-state.md` - Overall project status
 
+Make sure to ALWAYS read these files first to understand current status, and ALWAYS update them after completing work.
+
 ## Target Technology Stack
 
 ### POC Stack (Default for Initial Development)

@@ -19,10 +19,10 @@ This file tracks the modernization status of each component/module in the CardDe
 | MOD-001 | Authentication | COSGN00C | ✅ Business Requirements Complete | 33% | Application Architect |
 | MOD-002 | Account Management | CBACT01C-04C, COACTVWC, COACTUPC | ✅ Business Requirements Complete | 33% | Application Architect |
 | MOD-003 | Card Management | COCRDLIC, COCRDSLC, COCRDUPC | ✅ Business Requirements Complete | 33% | Application Architect |
-| MOD-004 | Transaction Processing | CBTRN01C-03C, COTRN00C-02C | ✅ COBOL Analysis Complete | 17% | - |
-| MOD-005 | User Management | COUSR00C-03C | ✅ COBOL Analysis Complete | 17% | - |
-| MOD-006 | Report Generation | CBSTM03A, CBSTM03B, CORPT00C, COBIL00C | ✅ COBOL Analysis Complete | 17% | - |
-| MOD-007 | Batch Processing | Various JCL jobs | ✅ COBOL Analysis Complete | 17% | - |
+| MOD-004 | Transaction Processing | CBTRN01C-03C, COTRN00C-02C | ✅ Business Requirements Complete | 33% | Application Architect |
+| MOD-005 | User Management | COUSR00C-03C | ✅ Business Requirements Complete | 33% | Application Architect |
+| MOD-006 | Report Generation | CBSTM03A, CBSTM03B, CORPT00C, COBIL00C | ✅ Business Requirements Complete | 33% | Application Architect |
+| MOD-007 | Batch Processing | Various JCL jobs | ✅ Business Requirements Complete | 33% | Application Architect |
 
 ---
 
