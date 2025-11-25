@@ -56,7 +56,7 @@ This file tracks the modernization status of each component/module in the CardDe
 - ✅ UC-003: Authentication Failure Recovery (error handling and retry)
 - ✅ UC-004: Session Timeout (automatic security logout)
 
-**User Stories** (12 total):
+**User Stories** (23 total):
 - ✅ US-001: Successful Login with Valid Credentials
 - ✅ US-002: Login Failure with Invalid Password
 - ✅ US-003: Login Failure with Non-Existent Username
@@ -69,6 +69,17 @@ This file tracks the modernization status of each component/module in the CardDe
 - ✅ US-010: Secure Password Handling
 - ✅ US-011: Missing Required Fields Validation
 - ✅ US-012: Session Context Maintenance
+- ✅ US-013: Password Incorrect with Retry
+- ✅ US-014: User Identifier Not Found
+- ✅ US-015: Multiple Failed Attempts Warning
+- ✅ US-016: Account Lockout After Maximum Attempts
+- ✅ US-017: Forgot Password Link Access
+- ✅ US-018: Missing Required Fields Validation
+- ✅ US-019: Network or System Error Recovery
+- ✅ US-020: Automatic Account Unlock After Lockout Duration
+- ✅ US-021: Failed Attempt Counter Reset on Success
+- ✅ US-022: Error Message Clarity and Accessibility
+- ✅ US-023: Administratively Disabled Account
 
 ### Dependencies
 - None (starting point for modernization)
@@ -362,6 +373,7 @@ This file tracks the modernization status of each component/module in the CardDe
 |------|-----------|--------|------------|
 | 2025-11-19 | All | Initial component status created | System |
 | 2025-11-20 | MOD-001 | Business Requirements Complete (BR-001, 4 use cases, 12 user stories) | Application Architect |
+| 2025-11-25 | MOD-001 | Added 11 user stories for UC-003 (Authentication Failure Recovery) - now 23 total user stories | Application Architect |
 | 2025-11-20 | MOD-002 | Business Requirements Complete (BR-002, 4 use cases) | Application Architect |
 | 2025-11-20 | MOD-003 | Business Requirements Complete (BR-003, 3 use cases) | Application Architect |
 | 2025-11-20 | Cross-Cutting | POC Development Environment Complete - Blazor .NET 10 app with API and SQLite | POC Developer |

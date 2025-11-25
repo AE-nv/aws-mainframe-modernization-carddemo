@@ -206,6 +206,19 @@
 - **UC-006**: Password Reset (alternative when user can't remember password)
 - **UC-007**: Account Unlock (administrator manually unlocks account)
 
+## Related User Stories
+- **US-013**: Password Incorrect with Retry
+- **US-014**: User Identifier Not Found
+- **US-015**: Multiple Failed Attempts Warning
+- **US-016**: Account Lockout After Maximum Attempts
+- **US-017**: Forgot Password Link Access
+- **US-018**: Missing Required Fields Validation
+- **US-019**: Network or System Error Recovery
+- **US-020**: Automatic Account Unlock After Lockout Duration
+- **US-021**: Failed Attempt Counter Reset on Success
+- **US-022**: Error Message Clarity and Accessibility
+- **US-023**: Administratively Disabled Account
+
 ## Source References
 - **COBOL Program**: COSGN00C (error handling routines)
 - **Business Requirement**: BR-001 (User Authentication - FR-001.4)
